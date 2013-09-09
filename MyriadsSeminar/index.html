@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Deployments with Puppet and Capistrano</title>
+
+
+        <script type="text/javascript" src="lib/d3.v3.min.js"></script>
+
+        <style>
+            path.link {
+                fill: none;
+                stroke: #ccc;
+                stroke-with: 1.5px;
+            }
+        </style>
+       	<link rel="stylesheet" href="lib/revealjs/css/reveal.min.css"> 
+        <link rel="stylesheet" href="lib/revealjs/css/theme/beige.css" id="theme"> 
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/revealjs/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="lib/revealjs/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+        <
+        
+        ![endif]-->
+        <style>
+        </style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+                    <h1>Deployments</h1>
+					<h3>With Puppet and Capistrano</h3>
+					<p>
+						<small> <a href="mailto://matthieu.simonin@inria.fr">Matthieu Simonin</a> </small>
+					</p>
+				</section>
+
+
+                <section>
+                    <h2>Main dependencies</h2>
+                    <div id="dependency-tree"></div>
+                    <script src="lib/treeview.js"></script>
+				</section>
+
+				<section>
+                    <h2>First approach : Preconfigured images </h2>
+
+                    <p>
+                    <ul>
+                        <li>Do I need to install everything on all nodes ?</li>
+                        <li>How do I maintain the base images ?</li>
+                        <li>How often do I need to update the base images ?</li>
+                    </ul>       
+                    </p>
+				</section>
+
+				<section>
+                    <h2>I need to find something else</h2>
+
+                    <h4> I would like :</h4>
+                    <div>
+                        <ul>                    
+                          <li>To be up to date with the third party softwares</li>
+                          <li>To be able to experiment new dependencies quickly</li>
+                          <li>To deploy exactly what needed : 
+                            <ul>
+                                <li>version specific deployment</li> 
+                                <li>node roles specific deployment</li>
+                              </ul>
+                          </li>
+                       </ul>
+                  </div>
+				</section>
+
+
+                    <section>
+                        <h2>Capistrano + puppet seems to fit my needs</h2>
+                        <p style="text-align:left">
+                        Capistrano...
+                            <ul>
+                                <li>DSL Ruby</li>
+                                <li>run commands in parallel on remote hosts</li>
+                                <li>support tunneling connections</li>
+
+                            </ul>
+                         </p>
+                         <p style="text-align:left">
+                         Puppet...
+                            <ul>
+                                <li>DSL Ruby</li>
+                                <li>manage administratives tasks on hosts like : 
+                                <ul>
+                                    <li>package installation
+                                    </li>
+                                    <li>user management</li>
+                                </ul>
+                                </li>
+                            </ul>
+                         </p>
+                         </section>
+
+                    <section>
+                        <h2>Capistrano + puppet in a glance</h2>
+                        <div>
+                            <img src="images/traces.png" alt="Traces">
+                        </div>
+                                                
+                    </section>
+                    
+                    <section>
+                        <section>
+                             <h1>Capistrano</h1>
+                        </section>
+
+                        <section>
+                        <h2> Capfile.pp : Roles & Tasks</h2>
+
+                      <div style="width:60%; float:left;">
+                        <p>Define your roles</p>
+                        <pre><code data-trim contenteditable>
+role :all do
+  # your servers here
+end
+                        </code></pre> 
+
+                        <p>Define your tasks</p>
+                        <pre><code data-trim contenteditable>
+desc 'Install puppet on nodes'
+task :puppet, :roles=>[:all] do
+  set :user, 'root'
+  run "apt-get update"
+  run "apt-get install -y puppet"
+end
+                        </code></pre>
+                    </div>
+                    <div style="float:left; width:40%">
+                        <code><pre>
+Basic directory structure
+-------------------------
+
+.
+├── Capfile
+├── config
+│   ├── deploy
+│   └── deploy.rb 
+                        </code></pre>
+                    </div>
+                </section>
+
+                    <section>
+                        <h2> Capistrano : Roles & Tasks</h2>
+
+                        <p>
+                        <pre><code data-trim contenteditable>
++----------------------------------------------------------------------+
+|rabbitmq                      parapluie-27.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|nfs_server                    parapluie-27.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|bootstrap                     parapluie-27.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|all                           parapluie-26.rennes.grid5000.fr         |
+|                              parapluie-27.rennes.grid5000.fr         |
+|                              parapluie-21.rennes.grid5000.fr         |
+|                              parapluie-22.rennes.grid5000.fr         |
+|                              parapluie-25.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|cassandra                     parapide-16.rennes.grid5000.fr          |
+|                              parapide-13.rennes.grid5000.fr          |
+|                              parapide-14.rennes.grid5000.fr          |
+|                              parapide-15.rennes.grid5000.fr          |
++----------------------------------------------------------------------+
+|cassandra_first               parapide-13.rennes.grid5000.fr          |
++----------------------------------------------------------------------+
+|nfs_slave                     parapluie-22.rennes.grid5000.fr         |
+|                              parapluie-21.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|localcontroller               parapluie-22.rennes.grid5000.fr         |
+|                              parapluie-21.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|groupmanager                  parapluie-26.rennes.grid5000.fr         |
+|                              parapluie-25.rennes.grid5000.fr         |
++----------------------------------------------------------------------+
+|frontend                      rennes                                  |
++----------------------------------------------------------------------+
+|subnet                        rennes                                  |
++----------------------------------------------------------------------+
+                        </code></pre>
+                    </p>
+                   <p><small><a href="https://github.com/capistrano/capistrano">Capistrano</a></small></p>
+                    </section>
+                   
+                  
+                  <section>
+                    <h2>Useful built-in features </h2>
+                    <h4>Tasks descriptions and namespaces</h4>
+                    <pre><code>
+ > cap -T
+ ---------------------------
+ cap automatic            # Automatic deployment
+ cap clean                # Remove all running jobs
+ cap deploy               # Deploy with Kadeploy
+ cap describe             # Describe the cluster
+ cap experimental         # Set the target stage to `experimental'.
+ cap invoke               # Invoke a single command on the remote servers.
+ cap maint1.0.0           # Set the target stage to `maint1.0.0'.
+ cap master               # Set the target stage to `master'.
+ cap multistage:prepare   # Stub out the staging config files.
+ cap nfs                  # Deploy NFS on nodes
+ cap nfs:client           # Configure NFS clients
+ cap nfs:server           # Configure NFS server
+ cap sandbox              # Set the target stage to `sandbox'.
+ cap shell                # Begin an interactive Capistrano session.
+ cap snooze               # Install Snooze on nodes
+ cap snooze:cluster       # Configure the cluster
+ cap snooze:cluster:start # Start cluster
+ cap snooze:cluster:stop  # Stop cluster
+ cap snooze:prepare       # prepare the nodes
+ cap snooze:provision     # Provision all the nodes
+ cap submit               # Submit jobs
+ cap testing              # Set the target stage to `testing'.
+ </code></pre>
+
+                    </section>
+
+                    <section>
+                        <h2>Useful built-in features </h2>
+                        <h4>Remote shell and remote command invokation</h4>
+                        <pre><code>
+ > cap shell ROLES="all" USER="root"
+ ---------------------------
+ cap> date
+ [establishing connection(s) to parapluie-27.rennes.grid5000.fr, parapluie-25.rennes.grid5000.fr,
+ parapluie-26.rennes.grid5000.fr, parapluie-21.rennes.grid5000.fr, parapluie-22.rennes.grid5000.fr]
+** [out :: parapluie-26.rennes.grid5000.fr] Mon Sep  9 14:38:19 CEST 2013
+** [out :: parapluie-21.rennes.grid5000.fr] Mon Sep  9 14:38:19 CEST 2013
+** [out :: parapluie-22.rennes.grid5000.fr] Mon Sep  9 14:38:19 CEST 2013
+** [out :: parapluie-27.rennes.grid5000.fr] Mon Sep  9 14:38:19 CEST 2013
+** [out :: parapluie-25.rennes.grid5000.fr] Mon Sep  9 14:38:19 CEST 2013
+                        </code></pre>
+
+                        <code><pre>
+> cap invoke ROLES="all" USER="root" COMMAND="date"
+                        </code></pre>
+                      </section>
+
+                    <section>
+                        <h2>Useful built-in features </h2>
+                        <h4>:before and :after hooks</h4>
+                        <div style="">
+                        <pre><code>
+desc 'Automatic deployment'
+task :automatic do
+  puts "Welcome to Snooze deployment".bold.blue
+end
+
+after "automatic", "xp5k", "rabbitmq","cassandra", "nfs", "snooze"
+                        </code></pre>
+<!--
+                        <pre><code>
+before "snooze:prepare:puppet" do
+  print "   #{childmark}"
+  print "Installing puppet........................"
+  start_spinner()
+end
+
+after "snooze:prepare:puppet" do
+  stop_spinner()
+  puts "#{checkmark}"
+end
+
+                        </code></pre>
+-->
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2>Useful built-in features </h2>
+                        <h4>Multistage support</h4>
+                        <pre><code>
+                        ├── Capfile
+                        ├── config
+                        │   ├── deploy
+                        │   │   ├── experimental.rb
+                        │   │   ├── maint1.0.0.rb
+                        │   │   ├── master.rb
+                        │   │   ├── sandbox.rb
+                        │   │   ├── testing.rb
+                        │   │   └── xp5k
+                        │   ├── deploy.rb
+                        │   └── lib
+                        │       └── spinner.rb
+                        ├── Gemfile
+                        ├── Gemfile.lock
+                        ├── README.md
+                        ├── recipes
+                        │   ├── cassandra
+                        │   │   ├── output.rb
+                        │   │   ├── recipe.rb
+                        │   │   ├── roles.rb
+                        │   │   ├── schema
+                        │   │   ├── templates
+                        │   │   └── tmp
+                        │   ├── dfs
+                        │   │   ├── module
+                        │   │   ├── output.rb
+                        │   │   ├── recipe.rb
+                        │   │   ├── roles.rb
+                        │   │   ├── templates
+                        │   │   └── tmp
+                        │   ├── keystone
+                        │   │   ├── output.rb
+                        │   │   ├── recipe.rb
+                        │   │   ├── roles.rb
+                        │   │   ├── templates
+                        │   │   └── tmp
+                        │   ├── nfs
+                        │   │   ├── module
+                        │   │   ├── output.rb
+                        │   │   ├── recipe.rb
+                        │   │   ├── roles.rb
+                        │   │   ├── templates
+                        │   │   └── tmp
+                        │   ├── rabbitmq
+                        │   │   ├── output.rb
+                        │   │   ├── recipe.rb
+                        │   │   ├── roles.rb
+                        │   │   ├── templates
+                        │   │   └── tmp
+                        │   └── snooze
+                        │       ├── network
+                        │       ├── output.rb
+                        │       ├── recipe.rb
+                        │       ├── roles.rb
+                        │       ├── templates
+                        │       └── tmp
+                        └── xp.log
+                        </code></pre>
+
+                        <pre><code>
+cap experimental automatic
+---------------------------
+Load experimental.rb and launch the task automatic of the experimental stage 
+                        </code></pre> 
+
+                        </section>
+                     </section>
+        
+                     <section>
+                        <section>
+                            <h1>Puppet</h1>
+
+                        </section>
+                        <section>
+                            <h2>Puppet quick overview</h2>
+                            On a node : 
+                            <pre><code>
+> puppet module install puppetlabs/ntp 
+                            </code></pre>
+                            <pre><code>
+> cat manifest.pp
+-----------------
+class { 'ntp':
+   servers => [ 'ntp1.corp.com', 'ntp2.corp.com' ],
+} 
+                            </code></pre>
+                            <pre><code>
+> puppet apply manifests.pp
+                            </code></pre>
+
+                        </section>
+                        
+                        <section>
+                            <h2>Benefits (or not) of puppet modules</h2>
+
+                            <ul>
+                                <li>Large modules database</li>
+                                <li>Platform independant (or not)</li>
+                                <li>Up to date modules (or not)</li>
+                           </ul>
+                        </section>
+
+                        </section>
+
+                     <section>
+                     <h2>puppet and capistrano</h2>
+                     <div>
+                         <img src="images/traces.png" alt="Traces">
+                     </div>
+                     </section>
+			</div>
+
+		</div>
+
+		<script src="lib/revealjs/lib/js/head.min.js"></script>
+		<script src="lib/revealjs/js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+                center: true,
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: 'linear',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'revealjs/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'revealjs/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'revealjs/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
