@@ -74,7 +74,8 @@ function update(source) {
 
   nodeEnter.append("svg:circle")
       .attr("r", 50)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+      .style("stroke", "#ccc");
 
   nodeEnter.append("svg:text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
