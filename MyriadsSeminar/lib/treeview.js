@@ -74,6 +74,7 @@ function update(source) {
 
   nodeEnter.append("svg:circle")
       .attr("r", 50)
+      .attr("stroke", "#ccc")
       .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
   nodeEnter.append("svg:text")
