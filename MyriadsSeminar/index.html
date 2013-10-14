@@ -54,11 +54,12 @@
 
                 <section>
                     <h2>Main dependencies</h2>
-                    <div id="dependency-tree"></div>
+                    <div id="dependency-tree" style="position:relative; left:-100px"></div>
                     <script src="lib/treeview.js"></script>
 				</section>
 
-				<section>
+                <section>
+                    <section>
                     <h2>First approach : Preconfigured images </h2>
 
                     <p>
@@ -66,8 +67,18 @@
                         <li>Do I need to install everything on all nodes ?</li>
                         <li>How do I maintain the base images ?</li>
                         <li>How often do I need to update the base images ?</li>
+                        <li>Is it generic ? </li>
+                        <li>Is it enough to deploy the base image ?</li>
                     </ul>       
                     </p>
+                    </section>
+                    <section>
+                        <h2>G5k tutorials</h2>
+                        <div>
+                            <a href="https://www.grid5000.fr/mediawiki/index.php/Deploy_environment-OAR2#Create_a_new_environment_from_a_customized_environment">Customizing environment</a>
+                        </div>    
+                            <img  src="images/g5k-tuto.png"/>
+                    </section>
 				</section>
 
 				<section>
@@ -76,23 +87,30 @@
                     <h4> I would like :</h4>
                     <div>
                         <ul>                    
-                          <li>To be up to date with the third party softwares</li>
-                          <li>To be able to experiment new dependencies quickly</li>
-                          <li>To deploy exactly what needed : 
+                          <li class="fragment">To be up to date with the third party softwares</li>
+                          <li class="fragment">To be able to experiment new dependencies quickly</li>
+                          <li class="fragment">To deploy exactly what needed : 
                             <ul>
                                 <li>version specific deployment</li> 
-                                <li>node roles specific deployment</li>
-                              </ul>
+                                <li>node role specific deployment</li>
+                            </ul>
+                          <li class="fragment">To be generic, 
+                            <ul>
+                                <li>Platform independant</li>
+                                <li>Distribution agnostic</li>
+                            </ul>
                           </li>
+                          </li>
+                          <li class="fragment">To have checkpoints</li>
                        </ul>
                   </div>
 				</section>
 
 
-                    <section>
+                <section>
                         <h2>Capistrano + puppet seems to fit my needs</h2>
                         <p style="text-align:left">
-                        Capistrano...
+                        <a href="https://github.com/capistrano/capistrano"><img style="border:none" src="images/capistrano-github.png"></a>
                             <ul>
                                 <li>DSL Ruby</li>
                                 <li>run commands in parallel on remote hosts</li>
@@ -101,7 +119,7 @@
                             </ul>
                          </p>
                          <p style="text-align:left">
-                         Puppet...
+                         <a href="https://github.com/puppetlabs/puppet"><img style="border:none" src="images/puppet-github.png"></a>
                             <ul>
                                 <li>DSL Ruby</li>
                                 <li>manage administratives tasks on hosts like : 
@@ -113,10 +131,10 @@
                                 </li>
                             </ul>
                          </p>
-                         </section>
+                    </section>
 
                     <section>
-                        <h2>Capistrano + puppet in a glance</h2>
+                        <h2>Capistrano + puppet at a glance</h2>
                         <div>
                             <img src="images/traces.png" alt="Traces">
                         </div>
@@ -131,7 +149,6 @@
                         <section>
                         <h2> Capfile.pp : Roles & Tasks</h2>
 
-                      <div style="width:60%; float:left;">
                         <p>Define your roles</p>
                         <pre><code data-trim contenteditable>
 role :all do
@@ -142,25 +159,18 @@ end
                         <p>Define your tasks</p>
                         <pre><code data-trim contenteditable>
 desc 'Install puppet on nodes'
-task :puppet, :roles=>[:all] do
+task :puppet, :roles => [:all] do
   set :user, 'root'
   run "apt-get update"
   run "apt-get install -y puppet"
 end
                         </code></pre>
-                    </div>
-                    <div style="float:left; width:40%">
-                        <code><pre>
-Basic directory structure
--------------------------
-
-.
-├── Capfile
-├── config
-│   ├── deploy
-│   └── deploy.rb 
+                        <p> Shell invokation </p>
+                        <pre><code data-trim contenteditable>
+                            > cap puppet
                         </code></pre>
-                    </div>
+
+    <small><a href="https://github.com/msimonin/xp5k">Complete example</a></small>
                 </section>
 
                     <section>
@@ -358,8 +368,31 @@ cap experimental automatic
 ---------------------------
 Load experimental.rb and launch the task automatic of the experimental stage 
                         </code></pre> 
+                </section>
+ 				<section>
+                    <h2>I need to find something else</h2>
 
-                        </section>
+                    <h4> I would like :</h4>
+                    <div>
+                        <ul>                    
+                          <li>To be up to date with the third party softwares</li>
+                          <li>To be able to experiment new dependencies quickly <img style="border:none" width=30px src="images/checkmark.png"/></li>
+                          <li>To deploy exactly what needed : 
+                            <ul>
+                                <li>version specific deployment<img style="border:none" width=30px src="images/checkmark.png"/></li>
+                                <li>node role specific deployment<img style="border:none" width=30px src="images/checkmark.png"/></li>
+                            </ul>
+                          <li>To be generic, 
+                            <ul>
+                                <li>Platform independant <img style="border:none" width=30px src="images/checkmark.png"/> </li>
+                                <li>Distribution agnostic</li>
+                            </ul>
+                          </li>
+                          <li>To have checkpoints <img style="border:none" width=30px src="images/checkmark.png"/></li>
+                          </li>
+                       </ul>
+                  </div>
+				</section>
                      </section>
         
                      <section>
@@ -399,11 +432,34 @@ class { 'ntp':
                         </section>
 
                      <section>
-                     <h2>puppet and capistrano</h2>
-                     <div>
-                         <img src="images/traces.png" alt="Traces">
-                     </div>
-                     </section>
+                    <h2>I need to find something else</h2>
+
+                    <h4> I would like :</h4>
+                    <div>
+                        <ul>                    
+                            <li>To be up to date with the third party softwares <img style="border:none" width=30px src="images/checkmark.png"/></li> 
+                          <li>To be able to experiment new dependencies quickly <img style="border:none" width=30px src="images/checkmark.png"/></li>
+                          <li>To deploy exactly what needed : 
+                            <ul>
+                                <li>version specific deployment<img style="border:none" width=30px src="images/checkmark.png"/></li>
+                                <li>node role specific deployment<img style="border:none" width=30px src="images/checkmark.png"/></li>
+                            </ul>
+                          <li>To be generic, 
+                            <ul>
+                                <li>Platform independant <img style="border:none" width=30px src="images/checkmark.png"/> </li>
+                                <li>Distribution agnostic <img style="border:none" width=30px src="images/checkmark.png"/></li>
+                            </ul>
+                          </li>
+                          </li>
+                          <li>To have checkpoints <img style="border:none" width=30px src="images/checkmark.png"/></li>
+                       </ul>
+                  </div>
+				</section>
+                </section>
+
+                <section>
+                    <h2> How much for a Ruby ? </h2>
+                </section>
 			</div>
 
 		</div>

@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Snooze (D1 day)</title>
+
+
+        <script type="text/javascript" src="lib/d3.v3.min.js"></script>
+
+        <style>
+            path.link {
+                fill: none;
+                stroke: #ccc;
+                stroke-with: 3px;
+            }
+        </style>
+       	<link rel="stylesheet" href="lib/revealjs/css/reveal.min.css"> 
+        <link rel="stylesheet" href="lib/revealjs/css/theme/beige.css" id="theme"> 
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/revealjs/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="lib/revealjs/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+        <
+        
+        ![endif]-->
+        <style>
+        </style>
+	</head>
+
+  <body>
+
+	  <div class="reveal">
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+		  <section>
+        <h1>Snooze</h1>
+			  <h3>autonomic virtual machines system management</h3>
+				<p>
+				  <small> <a href="mailto://matthieu.simonin@inria.fr">Matthieu Simonin</a> </small>
+          <br/>
+				  <small> October 15, 2013</small>
+				</p>
+      </section>
+
+
+      <section data-autoslide="3000">
+        <h2>The system</h2>
+        <h3>Hierarchy</h3>
+        <div style="float:left">
+          <img src="images/snooze/system_architecture_without_bs.png"/> 
+        </div>
+        <div>
+          <ul>
+            <li class="fragment">
+              <p>
+                Local Controller <br/>
+                <small>Compute nodes (Host virtual machines)</small> 
+              </p>
+            </li>
+            <li class="fragment">
+              <p>
+                Group Manager <br/>
+                <small>
+                  Manage Local Controller <br/>
+                  VMs placement & life-cycle <br/>
+                  Energy management
+                </small>
+
+              </p>
+            </li>
+            <li class="fragment">
+            <p>
+              Group Leader <br/>
+              <small>
+                Oversees Group Managers
+              </small>
+            </p>
+            </li>
+          </ul>
+        </div>
+			</section>
+
+      <section data-autoslide="3000">
+        <h2>The system</h2>
+        <h3>Key Features</h3>
+
+        <ul>
+          <li class="fragment">Self-Configuration</li>
+          <li class="fragment">Self-Healing</li>
+          <li class="fragment">Virtual machines consolidation</li>
+          <li class="fragment">Overload/underload detection</li>
+        </ul> 
+      </section>
+
+
+      <section>
+        <section>
+          <h2>The system</h2>
+          <h3>Self-configuration</h3>
+          <img width=20% style="border:none;" src="./images/snooze/self_configuration.png">
+        </section>
+
+        <section>
+          <h3>Step 1: Leader Election</h3>
+          <ul>
+            <li>at system startup</li>
+            <li>after leader failure</li>
+          </ul>
+          <br/>
+          <img width="100%" src="./images/snooze/zookeeper-6.pdf"/>
+        </section>
+
+
+        <section>
+          <h3>Step 2: Group managers join procedure</h3>
+          <img width=100% src="./images/snooze/group_manager_join-0.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2: Group managers join procedure</h3>
+          <img width=100% src="./images/snooze/group_manager_join-1.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2: Group managers join procedure</h3>
+          <img width=100% src="./images/snooze/group_manager_join-2.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2': Local Controllers join procedure</h3>
+          <img width=100% src="./images/snooze/local_controller_join-0.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2': Local Controllers join procedure</h3>
+          <img width=100% src="./images/snooze/local_controller_join-1.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2': Local Controllers join procedure</h3>
+          <img width=100% src="./images/snooze/local_controller_join-2.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2': Local Controllers join procedure</h3>
+          <img width=100% src="./images/snooze/local_controller_join-3.pdf">
+        </section>
+
+        <section>
+          <h3>Step 2': Local Controllers join procedure</h3>
+          <img width=100% src="./images/snooze/local_controller_join-4.pdf">
+        </section>
+
+      </section>
+
+      <section>
+        <section>
+          <h2>The system</h2>
+          <h3>Self-healing</h3>
+          <img width=20% style="border:none;" src="./images/snooze/self_healing.png">
+        </section>
+
+        <section>
+          <h3>Group Manager Failure</h3>
+          <img width=100% src="./images/snooze/group_manager_failure-0.pdf">
+        </section>
+
+        <section>
+          <h3>Group Manager Failure</h3>
+          <img width=100% src="./images/snooze/group_manager_failure-1.pdf">
+        </section>
+
+        <section>
+          <h3>Group Manager Failure</h3>
+          <img width=100% src="./images/snooze/group_manager_failure-2.pdf">
+        </section>
+
+        <section>
+          <h3>Group Manager Failure</h3>
+          <img width=100% src="./images/snooze/group_manager_failure-3.pdf">
+        </section>
+
+        <section>
+          <h3>Group Leader Failure</h3>
+          <img width=100% src="./images/snooze/group_leader_failure-1.pdf">
+        </section>
+
+        <section>
+          <h3>Group Leader Failure</h3>
+          <img width=100% src="./images/snooze/group_leader_failure-2.pdf">
+        </section>
+
+        <section>
+          <h3>Group Leader Failure</h3>
+          <img width=100% src="./images/snooze/group_leader_failure-3.pdf">
+          <br/>
+          ... and the promotion of the Group Manager is seen as a failure by its previously assigned Local Controller 
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>The system</h2>
+          <h3>Automatic consolidation</h3>
+          <img width=20% style="border:none;" src="./images/snooze/consolidation.png">
+        </section>
+        <section>
+          Can be triggered periodically or manually.
+          
+          <div style="float:left;">
+            <img width="98%" src="./images/snooze/before_consolidation.png"/>
+            <br/>
+            Before consolidation
+            <br/>
+            <small>
+              <ul>
+                <li style="color:orange">Group Leader</li>
+                <li style="color:green">Group Manager</li>
+                <li style="color:blue">Local Controller</li>
+                <li style="color:red">Virtual machine</li>
+              </ul>
+            </small>
+          </div>
+          <div style="float:right;">
+            <img width="100%" src="./images/snooze/after_consolidation.png"/>
+            <br/>
+            After consolidation
+          </div>
+
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>From your laptop...</h2>
+          <div class="fragment">
+            <div style="float:left">
+              <h2>... to large scale</h2>
+              <img src="./images/snooze/largescale.png">
+            </div>
+            <div style="padding-top:100px">
+              Largest deployment : <br/>
+              1 000 GMs <br/>
+              10 000 LCs <br/>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>From your laptop...</h2>
+          <div>
+              <h2>... to large scale</h2>
+              <img width=100% src="./images/snooze/gm_failure.pdf">
+              Recovery of catastrophic failures
+          </div>
+        </section>
+
+      </section>
+
+      <section>
+        <h2>Developper's corner</h2>
+        <ul>
+          <li>
+            <p>
+              Add your own policies for 
+              <small><ul> 
+                  <li>VM scheduling</li> 
+                  <li>Consolidation</li>
+                  <li>Underload and overload detection</li>
+                </ul></small>
+            </p>
+          </li>
+          <li class="fragment">
+            <p>Control the system with the API</p>
+            <ul><small>
+              <li>get nodes monitoring information</li>
+              <li>control vm life cycle</li>
+              <li>trigger energy management</li>
+              </small></ul>
+          </li>
+        </ul>
+        <div class="fragment">
+          Source code is avalaibable in <a href="https://github.com/snoozesoftware"> github</a>
+        </div>
+      </section>
+
+      <section>
+        <img src="images/snooze/technologies.pdf/">
+      </section>
+
+
+		</div>
+
+		<script src="lib/revealjs/lib/js/head.min.js"></script>
+		<script src="lib/revealjs/js/reveal.min.js"></script>
+
+		<script>
+
+			Reveal.initialize({
+        autoSlide: 15000,
+				controls: true,
+				progress: true,
+				history: true,
+        center: true,
+        loop: true,
+				theme: Reveal.getQueryHash().theme, 
+				transition: 'linear',
+
+				dependencies: [
+					{ src: 'lib/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'lib/revealjs/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/revealjs/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/revealjs/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'lib/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'lib/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
