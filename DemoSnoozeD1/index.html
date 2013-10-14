@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Snooze</title>
+		<title>Snooze (D1 day)</title>
 
 
         <script type="text/javascript" src="lib/d3.v3.min.js"></script>
@@ -110,7 +110,14 @@
 
         <section>
           <h3>Step 1: Leader Election</h3>
+          <ul>
+            <li>at system startup</li>
+            <li>after leader failure</li>
+          </ul>
+          <br/>
+          <img width="100%" src="./images/snooze/zookeeper-6.pdf"/>
         </section>
+
 
         <section>
           <h3>Step 2: Group managers join procedure</h3>
@@ -217,13 +224,9 @@
         <section>
           <h2>From your laptop...</h2>
           <div>
-            <div style="float:left">
               <h2>... to large scale</h2>
               <img width=100% src="./images/snooze/gm_failure.pdf">
-            </div>
-            <div style="padding-top:100px">
               Recovery of catastrophic failures
-            </div>
           </div>
         </section>
 
@@ -264,18 +267,16 @@
 
 		<script>
 
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
-        autoSlide: 6000,
+        autoSlide: 15000,
 				controls: true,
 				progress: true,
 				history: true,
-                center: true,
-				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        center: true,
+        loop: true,
+				theme: Reveal.getQueryHash().theme, 
 				transition: 'linear',
 
-				// Optional libraries used to extend on reveal.js
 				dependencies: [
 					{ src: 'lib/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: 'lib/revealjs/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
