@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+		<title>Snooze, what's new from September 2013 ?</title>
+
+
+        <script type="text/javascript" src="lib/d3.v3.min.js"></script>
+
+        <style>
+            path.link {
+                fill: none;
+                stroke: #ccc;
+                stroke-with: 3px;
+            }
+        </style>
+       	<link rel="stylesheet" href="lib/revealjs/css/reveal.min.css"> 
+        <link rel="stylesheet" href="lib/revealjs/css/theme/beige.css" id="theme"> 
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/revealjs/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="lib/revealjs/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+        <
+        
+        ![endif]-->
+        <style>
+        </style>
+	</head>
+
+  <body>
+
+	  <div class="reveal">
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+		  <section>
+        <h1>Snooze</h1>
+        <h3>What's new since September 2013 ?</h3>
+        <small>Since Eugen last visit !</small>
+				<p>
+				  <small> <a href="mailto://matthieu.simonin@inria.fr">Matthieu Simonin</a> </small>
+          <br/>
+				  <small> January 8, 2014</small>
+				</p>
+      </section>
+
+      <section>
+        <h2>Three releases</h2>
+    
+        <ul>
+          <li>October 7, 2013, Snooze 2.0</li>
+          <small> Introduce Cassandra as database backend</small>
+          <li>December 6, 2013 : Snooze 2.1 <br/>
+            <small>Introduce image management, and EC2 interface, web gui and capistrano based deployment</small>
+            <li>January 8, 2014 : Snooze 2.1.1<br/>
+            <small>Bug fixing about migrations and euca2ools support.</small>
+            </li>
+            </li>
+        </ul>
+        </section>
+
+
+        <section>
+          <h2>New dependencies in the project</h2>
+          <img style="border:0px" src="images/hierarchy.png"/>
+        </section>
+  
+        <section>
+          <section>
+            <h3>snoozeimages project</h3>
+            <br/> 
+            <ul>
+              <li><strong>Goal : </strong> to manage base disk images.</li>
+              <li>Provides a REST API</li>
+              <li>Support libvirt pools as backend.</li>
+            </ul>
+          </section>
+          <section>
+            <a href="https://github.com/snoozesoftware/snoozeimages" target="_blank">Snoozeimages</a>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h3>snoozeec2 project</h3>
+            <br/> 
+            <ul>
+              <li><strong>Goal :</strong> to provide a support for a subset of the EC2 API functions.</li>
+              <li>Leads to better compatibility with EC2 based system (libcloud, euca2ools, resilin ...).</li>
+            </ul>
+            <br/> 
+            <br/> 
+
+            <h3>EC2ConfigGenerator library</h3>
+            <br/>
+            <ul>
+              <li><strong>Goal : </strong> to provide a convenient way of generating EC2 API language (xml)</li>
+              <li>Relies on Jaxb</li> 
+            </ul>
+          </section>
+          <section>
+            <br/>
+            <a href="https://github.com/snoozesoftware/snoozeec2" target="_blank">Snoozeec2</a>
+            <br/>
+            <a href="https://github.com/snoozesoftware/EC2ConfigGenerator" target="_blank">EC2ConfigGenerator</a>
+            <br/>
+          </section>
+        </section>
+
+
+        <section>
+          <section>
+            <h3>libvirtConfigGenerator library</h3>
+            <br/>
+            <ul>
+              <li><strong>Goal : </strong> to provide a convenient way of generating/parsing libvirt template.</li>
+              <li>Relies on Jaxb (but implemented from scratch)</li>
+            </ul>
+
+           <br/>
+          </section>
+
+          <section>
+            <a href="https://github.com/snoozesoftware/libvirtconfiggenerator" target="_blank">libvirtConfigGenerator</a>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h3>Snooze-capistrano</h3>
+            <br/>
+            <ul>
+              <li><strong>Goal :</strong> to provide a modular and customizable deployment script for Grid'5000.</li>
+              <li>Keywords : Ruby / Capistrano / Puppet </li>
+            </ul>
+            <br/>
+            <br/>
+
+            <h3>Snooze web</h3>
+            <br/>
+            <ul>
+              <li> <strong>Goal : </strong> to provide a web gui to snooze.</li>
+              <li>Keywords : Ruby / sinatra </li>
+            </ul>
+            <br/>
+            <br/>
+
+            <h3>Documentation updated</h3>
+            <br/>
+            <ul>
+              <li><strong>Goal : </strong> to have a documentation in sync with releases</li>
+              <li>Based on <i>sphinx</i></li>
+            </ul>
+          </section>
+          <section>
+            <a href="https://github.com/msimonin/snooze-capistrano" target="_blank">snooze-capistrano</a>
+            <br/>
+            <a href="https://github.com/msimonin/snoozeweb" target="_blank">snooze-web</a>
+            <br/>
+            <a href="http://snooze.inria.fr/support/documentations/" target="_blank">snooze-documentation</a>
+            <br/>
+            </section>
+        </section>
+
+        <section>
+          <h2>Three focus</h2>
+        </section>
+
+        <section>
+          <h3>Submission process</h3>
+          
+          <br/>
+          <strong>Goal :</strong> to allow user to submit virtual machine either : 
+          <br/>
+          <ul>
+            <li>by passing virtual machines specs (cpus, ram, network)</li>
+            <small>The libvirt template is generated on the fly</small>
+            <li>or with the libvirt template (retrocompatibility)</li>
+          </ul>
+        </section> 
+
+        <section>
+
+          <h3>VM disk image placement</h3>
+          
+          <br/>
+          <strong>Goal :</strong> to implement different policies concerning image disk placements.
+
+          <ul>
+            <li><i>Backing :</i> <br/>
+            master file resides on shared directory, diff files can be local.
+            </li>
+            <li><i>localBacking :</i> <br/>
+            master file and diff are local. 
+            </li>
+          </ul>
+
+          <br/>
+          <br/>
+          <h3>VM disk image propagation</h3>
+          Investigating different solutions.
+          
+          </section>
+
+          
+          <section>
+            <h3>Deployment of hadoop cluster</h3>
+
+            <a href="http://snooze.inria.fr/focus-on-hadoop/" target="_blank">tutorial</a>
+             
+          </section>
+
+
+          <section>
+          <h3>Demo ?</h3>
+          </section>
+
+		</div>
+
+		<script src="lib/revealjs/lib/js/head.min.js"></script>
+		<script src="lib/revealjs/js/reveal.min.js"></script>
+
+		<script>
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+        center: true,
+        loop: true,
+				theme: Reveal.getQueryHash().theme, 
+				transition: 'linear',
+
+				dependencies: [
+					{ src: 'lib/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'lib/revealjs/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/revealjs/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/revealjs/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'lib/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'lib/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

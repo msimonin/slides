@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+		<title>Snooze 3.0.0 rc1?</title>
+
+
+        <script type="text/javascript" src="lib/d3.v3.min.js"></script>
+
+        <style>
+            path.link {
+                fill: none;
+                stroke: #ccc;
+                stroke-with: 3px;
+              }
+
+        </style>
+       	<link rel="stylesheet" href="lib/revealjs/css/reveal.min.css"> 
+        <link rel="stylesheet" href="lib/revealjs/css/theme/beige.css" id="theme"> 
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/revealjs/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="lib/revealjs/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+        <
+        
+        ![endif]-->
+        <style>
+        </style>
+	</head>
+
+  <body>
+
+	  <div class="reveal">
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+      <section>
+        <h1> Snooze 3.0.0</h1>
+
+        <h2> Release Candidate 1</h2>
+
+        Snooze now gives power to the user.
+
+        </section>
+
+        <section>
+          <h3> New features </h3>
+          <ul>
+            <li>Static scheduling</li>
+            <li>Host metrics service</li>
+            <li>Abstract detection/resolution</li>
+            <li>Plugins system</li>
+          </ul>
+         </section>
+
+         <section> 
+            <h3>Static scheduling</h3>
+
+              <pre>
+                <code>
+  $templates = {"virtualMachineTemplates"=>
+    [
+      {   
+        "name"    => "vm0",
+        "hostId"  => "parapluie-27.rennes.grid5000.fr",
+        "imageId" => "debian-hadoop-context-big.qcow2",
+        "vcpus"   => 1,
+        "memory"  => 328000,
+      },
+      {   
+        "name"    => "vm1",
+        "hostId"  => "parapluie-23.rennes.grid5000.fr",
+        "imageId" => "debian-hadoop-context-big.qcow2",
+        "vcpus"   => 1,
+        "memory"  => 328000,
+      },
+      {   
+        "name"    => "vm2",
+        "hostId"  => "parapluie-25.rennes.grid5000.fr",
+        "imageId" => "debian-hadoop-context-big.qcow2",
+        "vcpus"   => 1,
+        "memory"  => 328000,
+      },
+    ]
+  }
+  `curl -X 'POST' -H 'Content-type: application/json' -d '#{JSON.dump($templates)}' http://localhost:5000/bootstrap?startVirtualCluster`
+                </code>
+              </pre>
+            </section>
+
+            <section>
+              <section>
+                <h3> Plugins management </h3>
+
+               
+                <ul>
+                  <li>Major feature</li>
+                  <li>Impacts the core code</li>
+                </ul>
+                </section>
+
+                <section>
+                  <h3> What can be plugged in ?</h3>
+
+                  <ul>
+                    <li>LocalController assignement algorithm</li>
+                    <li>Virtual machines dispatching algorithm</li>
+                    <li>Virtual machines placement algorithm</li>
+                    <li>Metrics estimator</li>
+                    <li>Resource estimator</li>
+                    <li>Anomaly Detection</li>
+                    <li>Anomaly Resolution</li>
+                  </ul>
+                  </section>
+
+                  <section>
+                    <h3>How plugins work ?</h3>
+                    
+                   <img style="border:0px" width=100% src="./images/plugin.svg"/>
+            
+                 </section>
+
+
+              </section>
+      
+              <section>
+                <section>
+                  <h3>Host Metrics service</h3>
+                  <h5>... one plugin example</h5>
+                </section>
+                <section>
+                  <h3>The monitoring before</h3>
+
+                  <img style="border:0px" src="./images/monitoring_before.svg"/>
+                 </section>
+
+                 <section>
+                  <h3>The monitoring now</h3>
+
+                  <img style="border:0px" src="./images/monitoring_after.svg"/>
+                  <ul>
+                    <li>Move the heartbeat logic</li>
+                    <li>remove the anomaly detection logic</li>
+                    <li>Store monitoring values in a DB</li>
+                    <li>Don't wait to aggregate for anomaly detection</li>
+                    <li>Producers are plugins</li>
+                  </ul>
+                
+                  </section>
+
+                  <section>
+                  <h3>One example (code)</h3>
+                  <p>
+                  <pre ><code data-trim style="max-height:800px">
+public final class LibVirtVirtualMachineHostMonitor
+  extends  HostMonitor
+{
+
+  /**
+  *
+  * Specific fields
+  *
+  */
+
+   public LibVirtVirtualMachineHostMonitor()
+   {
+     /** Creation*/
+   }   
+
+   public void initialize() throws HostMonitoringException
+   {
+      /**Specific initialization / access to the options hash*/
+   }
+
+   public HostMonitoringData getResourceData() throws HostMonitoringException
+   {
+     /** Get the metrics here.*/
+   }
+
+}
+                  </code></pre>
+            </p>
+            </section>
+
+           <section>
+            <h3>One example (config)</h3>
+            <p> 
+            <pre ><code data-trim style="max-height:800px">
+################### Host Monitoring ########################
+
+# Producer declaration
+localController.hostmonitor = ganglia1,libvirt
+
+# Default values
+localController.hostmonitor.interval = 3000
+localController.hostmonitor.numberOfMonitoringEntries = 30
+localController.hostmonitor.estimator = average
+
+# libvirt hostmonitor
+localController.hostmonitor.libvirt = org.inria.myriads.snoozenode.plugins.LibvirtHostMonitor
+localController.hostmonitor.libvirt.options = {"hostname": "localhost"}
+localController.hostmonitor.libvirt.published = cpu_user,mem_free
+localController.hostmonitor.libvirt.thresholds.cpu_user = 0,30,70
+localController.hostmonitor.libvirt.thresholds.mem_free = 0,50,80
+                </code></pre>
+                </p>
+                </section>
+              </section>
+
+
+              <section>
+                <section>
+                  <h3>Anomaly Detection/Resolution </h3>
+                </section>
+                <section>
+                  <h3>Anomaly Detection before</h3>
+                  <ul>
+                    <li>Computed on aggregated monitoring value</li>
+
+                  </ul>
+                </section>
+
+              <img src="./images/anomaly_service.svg"/>
+
+              <ul>
+                <li>Anomaly Detector is a plugin</li>
+                <li>New anomaly detection algorithms can be plugged in 
+                (idea : adaptive thresholds, delayed anomaly detection ...)</li>
+              </ul>
+            </section>
+
+           
+
+
+
+
+		</div>
+
+		<script src="lib/revealjs/lib/js/head.min.js"></script>
+		<script src="lib/revealjs/js/reveal.min.js"></script>
+
+		<script>
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+        center: true,
+        loop: true,
+				theme: Reveal.getQueryHash().theme, 
+				transition: 'linear',
+
+				dependencies: [
+					{ src: 'lib/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'lib/revealjs/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/revealjs/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/revealjs/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'lib/revealjs/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'lib/revealjs/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
